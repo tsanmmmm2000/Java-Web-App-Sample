@@ -1,7 +1,9 @@
+package util;
+
 import com.google.inject.Inject;
 import service.ContactService;
 
-public class Factory {
+public class RepositoryFactory {
 
     @Inject
     private ContactService contactService;

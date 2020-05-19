@@ -16,7 +16,8 @@ public class MySqlConnectionInfo {
     public MySqlConnectionInfo() { }
 
     @Inject
-    public MySqlConnectionInfo(String host, String port, String schema, String user, String password) {
+    public MySqlConnectionInfo(String host, String port,
+                               String schema, String user, String password) {
         this.host = host;
         this.port = port;
         this.schema = schema;
