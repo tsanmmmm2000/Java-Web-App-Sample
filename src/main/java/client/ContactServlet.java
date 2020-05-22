@@ -1,36 +1,45 @@
 package client;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import dataaccess.domain.Contact;
 import service.ContactService;
+import util.Configuration;
 import util.RepositoryFactory;
 import util.Utility;
 
-import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
+@WebServlet(name="ContactServlet", urlPatterns={"/contact"})
 public class ContactServlet extends HttpServlet {
 
     private final String create = "create";
     private final String get = "get";
+    private final String getAll = "getall";
     private final String update = "update";
     private final String delete = "delete";
 
     private HttpServletRequest request;
     private HttpServletResponse response;
+    private RepositoryFactory factory;
     private ContactService contactService;
+    private Injector injector;
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
-
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         request = req;
         response = resp;
 
-        RepositoryFactory factory = Utility.getRepository();
-        contactService = factory.getContactService();
+        if (injector == null) {
+            injector = Guice.createInjector(new Configuration());
+            factory = injector.getInstance(RepositoryFactory.class);
+            contactService = factory.getContactService();
+        }
 
         String command = request.getParameter("cmd");
         processCommand(command);
@@ -43,6 +52,9 @@ public class ContactServlet extends HttpServlet {
                 break;
             case get:
                 get();
+                break;
+            case getAll:
+                getAll();
                 break;
             case update:
                 update();
@@ -75,6 +87,12 @@ public class ContactServlet extends HttpServlet {
         Contact contact = contactService.get(id);
 
         Utility.writeAjaxResult(response, true, "", contact);
+    }
+
+    private void getAll() throws IOException {
+        List<Contact> contacts = contactService.getAll();
+
+        Utility.writeAjaxResult(response, true, "", contacts);
     }
 
     private void update() throws IOException {

@@ -4,7 +4,9 @@ import com.google.inject.Inject;
 import dataaccess.domain.Contact;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class MySqlConnectionHelper {
 
@@ -16,10 +18,10 @@ public class MySqlConnectionHelper {
         this.connectionInfo = connectionInfo;
     }
 
-    public Contact execute(String sql, HashMap<Integer, Object> parameters) {
+    public List<Contact> execute(String sql, HashMap<Integer, Object> parameters) {
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        Contact contact = null;
+        List<Contact> contacts = null;
         try {
 
             stmt = getConnection().prepareStatement(sql);
@@ -35,14 +37,16 @@ public class MySqlConnectionHelper {
                 }
             }
 
-            if (stmt.execute(sql)) {
+            if (stmt.execute()) {
                 rs = stmt.getResultSet();
-                contact = new Contact();
+                contacts = new ArrayList<Contact>();
                 while (rs.next()) {
+                    Contact contact = new Contact();
                     contact.setId(rs.getInt("id"));
                     contact.setFirstName(rs.getString("first_name"));
                     contact.setLastName(rs.getString("last_name"));
                     contact.setAddress(rs.getString("address"));
+                    contacts.add(contact);
                 }
             }
 
@@ -65,7 +69,7 @@ public class MySqlConnectionHelper {
                 }
             }
         }
-        return contact;
+        return contacts;
     }
 
 

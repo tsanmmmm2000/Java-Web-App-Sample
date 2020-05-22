@@ -22,6 +22,13 @@ public class MySqlContactDao implements ContactDao {
         connectionHelper.execute(sql, prepareParameters(values));
     }
     public Contact read(int id) {
+        String sql = "SELECT * FROM contact WHERE id = ?";
+        List<Object> values = new ArrayList<Object>();
+        values.add(id);
+        List<Contact> contacts = connectionHelper.execute(sql, prepareParameters(values));
+        return (contacts.size() > 0) ? contacts.get(0) : new Contact();
+    }
+    public List<Contact> read() {
         String sql = "SELECT * FROM contact";
         return connectionHelper.execute(sql, new HashMap<Integer, Object>());
     }

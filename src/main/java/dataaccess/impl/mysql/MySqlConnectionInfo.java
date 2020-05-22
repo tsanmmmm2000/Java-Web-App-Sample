@@ -1,11 +1,12 @@
 package dataaccess.impl.mysql;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 public class MySqlConnectionInfo {
 
-    private final String driver = "com.mysql.jdbc.Driver";
-    private final String url = "jdbc:mysql://%s:%s/%s";
+    private final String driver = "com.mysql.cj.jdbc.Driver";
+    private final String url = "jdbc:mysql://%s:%s/%s?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC";
 
     private String host = "localhost";
     private String port = "3306";
@@ -16,8 +17,9 @@ public class MySqlConnectionInfo {
     public MySqlConnectionInfo() { }
 
     @Inject
-    public MySqlConnectionInfo(String host, String port,
-                               String schema, String user, String password) {
+    public MySqlConnectionInfo(@Named("host") String host, @Named("port") String port,
+                               @Named("schema") String schema, @Named("user") String user,
+                               @Named("password") String password) {
         this.host = host;
         this.port = port;
         this.schema = schema;
@@ -50,6 +52,6 @@ public class MySqlConnectionInfo {
     }
 
     public String getDriver() {
-        return driver;
+        return this.driver;
     }
 }

@@ -8,11 +8,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class Utility {
-    private static RepositoryFactory repository = new RepositoryFactory();
-
-    public static RepositoryFactory getRepository() {
-        return repository;
-    }
 
     public static void writeAjaxResult(HttpServletResponse response, boolean success, String message, Object data) throws IOException {
         writeAjaxResult(response, GenAjaxResult(success, message, data));
